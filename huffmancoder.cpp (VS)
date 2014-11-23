@@ -1,0 +1,34 @@
+#include <iostream>
+#include "HuffmanTree.h"
+#include "HuffmanDecoder.h"
+
+int main()
+{
+	/*
+	std::string str = "Compress this string!";
+	HuffmanTree myTree;
+	myTree.compress(str, "nofile");
+
+	std::cout << str << std::endl;
+	std::cout << myTree.GetTable() << std::endl;
+	std::cout << myTree.GetMessage() << std::endl;
+	*/
+
+	/*
+	std::string str = "Compress this string!";
+	HuffmanTree myTree(str, "nofile");
+
+	std::cout << str << std::endl;
+	std::cout << myTree.GetTable() << std::endl;
+	std::cout << myTree.GetMessage() << std::endl;
+	*/
+
+	/*
+	HuffmanDecoder myTree;
+	myTree.filename = "--filename--";
+	myTree.decode();
+	std::cout << myTree.message << std::endl;
+	*/
+
+	return 0;
+}
