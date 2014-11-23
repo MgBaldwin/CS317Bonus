@@ -1,2 +1,2 @@
-CS317Bonus123
+Hello, I am Mike Baldwin and this is my bonus project for CS317. My code consists of headerfiles for pQueue, HuffmanTree, and HuffmanDecoder. It also contains a QtMainWindow application, source code and standalone executable. As well as sample code in a visual studio .pro showing how to use these headers yourself! I have also included a link to a flash video documenting the features of the QtMainWindow GUI.
 ==========
