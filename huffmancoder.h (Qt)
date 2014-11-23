@@ -1,0 +1,40 @@
+#ifndef HUFFMANCODER_H
+#define HUFFMANCODER_H
+
+#include <QMainWindow>
+#include <QFileDialog>
+#include "HuffmanDecoder.h"
+#include "HuffmanTree.h"
+
+namespace Ui {
+class HuffmanCoder;
+}
+
+class HuffmanCoder : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit HuffmanCoder(QWidget *parent = 0);
+    ~HuffmanCoder();
+
+private:
+    Ui::HuffmanCoder *ui;
+
+    QAction *clear;
+    QAction *save;
+    QAction *open;
+    QAction *quit;
+
+    QMenu *file;
+
+    HuffmanTree *myTree;
+    HuffmanDecoder *myDecoder;
+private slots:
+    void UpdateOutput();
+    void CheckOptions();
+    void Save();
+    void Open();
+};
+
+#endif // HUFFMANCODER_H
