@@ -1,0 +1,100 @@
+#include "huffmancoder.h"
+#include "ui_huffmancoder.h"
+
+HuffmanCoder::HuffmanCoder(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::HuffmanCoder)
+{
+    ui->setupUi(this);
+
+    clear = new QAction("Clear", this);
+    connect(clear, SIGNAL(triggered()), ui->txtInput, SLOT(clear()));
+    save = new QAction("Save Message", this);
+    save->setShortcut(QKeySequence::Save);
+    connect(save, SIGNAL(triggered()), this, SLOT(Save()));
+    open = new QAction("Open Message", this);
+    open->setShortcut(QKeySequence::Open);
+    connect(open, SIGNAL(triggered()), this, SLOT(Open()));
+    quit = new QAction("Quit", this);
+    connect(quit, SIGNAL(triggered()), this, SLOT(close()));
+
+    file = new QMenu("File");
+    file->addAction(clear);
+    file->addAction(save);
+    file->addAction(open);
+    file->addAction(quit);
+    menuBar()->addMenu(file);
+
+    connect(ui->txtInput, SIGNAL(textChanged(QString)), this, SLOT(CheckOptions()));
+    connect(ui->chkTable, SIGNAL(clicked()), this, SLOT(CheckOptions()));
+    connect(ui->chkMessage, SIGNAL(clicked()), this, SLOT(CheckOptions()));
+    connect(ui->chkRatio, SIGNAL(clicked()), this, SLOT(CheckOptions()));
+}
+
+HuffmanCoder::~HuffmanCoder()
+{
+    delete ui;
+}
+
+void HuffmanCoder::Save()
+{
+    QString filename = QFileDialog::getSaveFileName(this, "Save Message", "./untitled.txt", "Text files (*.txt)");
+
+    if (!filename.isEmpty())
+    {
+        myTree = new HuffmanTree;
+        myTree->compress(ui->txtInput->text().toStdString(), filename.toStdString());
+        delete myTree;
+    }
+}
+
+void HuffmanCoder::Open()
+{
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open Message"), "./",  tr("Text files (*.txt)"));
+
+    if (!filename.isEmpty())
+    {
+    myDecoder = new HuffmanDecoder;
+    QString message = QString::fromStdString(myDecoder->decode(filename.toStdString()));
+    ui->txtInput->setText(message);
+    delete myDecoder;
+    }
+}
+
+void HuffmanCoder::UpdateOutput()
+{
+    ui->textBrowser->clear();
+    if (ui->txtInput->text().length() > 0)
+    {
+    ui->textBrowser->append(ui->txtInput->text() + "\n");
+    myTree = new HuffmanTree;
+    myTree->compress(ui->txtInput->text().toStdString(), "nofile");
+
+    QString table = QString::fromStdString(myTree->GetTable());
+    QString message = QString::fromStdString(myTree->GetMessage());
+    delete myTree;
+    float ratio = (float)message.length()/(8*ui->txtInput->text().length());
+
+    if (ui->chkTable->isChecked())
+        ui->textBrowser->append("-----Compression Table-----\n" + table);
+    if (ui->chkMessage->isChecked())
+        ui->textBrowser->append("-----Current Message-----\n" + message + "\n");
+    if (ui->chkRatio->isChecked())
+        ui->textBrowser->append("Compression ratio = " + QString::number(message.length()/8) + "B/" + QString::number(ui->txtInput->text().length()) + "B = " + QString::number(ratio));
+    }
+    else
+    {
+        ui->textBrowser->append("Enter a string in the line edit above to create a compression table.");
+    }
+}
+
+void HuffmanCoder::CheckOptions()
+{
+    if (!(ui->chkTable->isChecked() || ui->chkMessage->isChecked() || ui->chkRatio->isChecked()))
+    {
+        ui->textBrowser->clear();
+        ui->textBrowser->append("No output has been selected, to see any output please select one of the check options above.");
+    }
+    else
+        UpdateOutput();
+}
